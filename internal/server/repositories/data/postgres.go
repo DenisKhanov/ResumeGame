@@ -2,6 +2,7 @@ package data
 
 import (
 	"context"
+	"fmt"
 	"github.com/DenisKhanov/ResumeGame/internal/server/models"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
@@ -22,7 +23,7 @@ func (r *RepositoryData) GetAboutOwner(ctx context.Context, ownerID int) (owner 
 		SELECT 
     			first_name, 
    				last_name, 
-    			birth_date,
+    			EXTRACT(YEAR FROM AGE(birth_date)) AS age,
     			about_me 
 		FROM
 				owners
@@ -32,7 +33,7 @@ func (r *RepositoryData) GetAboutOwner(ctx context.Context, ownerID int) (owner 
 	if err = r.dbPool.QueryRow(ctx, sqlQuery, ownerID).Scan(
 		&owner.FirstName,
 		&owner.LastName,
-		&owner.BirthDate,
+		&owner.Age,
 		&owner.About,
 	); err != nil {
 		return models.Owner{}, err
@@ -45,7 +46,7 @@ func (r *RepositoryData) GetProjectList(ctx context.Context, ownerID int) (data 
 		SELECT 
     			p.name AS project_name,
     			p.description AS project_description,
-    			GROUP_CONCAT(s.name ORDER BY s.name SEPARATOR ', ') AS used_skills
+    			STRING_AGG(s.name, ', ' ORDER BY s.name) AS used_skills
 		FROM 
     			projects p
 		JOIN 
@@ -56,6 +57,8 @@ func (r *RepositoryData) GetProjectList(ctx context.Context, ownerID int) (data 
     			skills s ON ps.skill_id = s.id
 		WHERE 
     			op.owner_id = $1 
+		GROUP BY 
+    			p.name, p.description
 		ORDER BY 
     			p.name;`
 	rows, err := r.dbPool.Query(ctx, sqlQuery, ownerID)
@@ -73,6 +76,7 @@ func (r *RepositoryData) GetProjectList(ctx context.Context, ownerID int) (data 
 			return nil, err
 		}
 		data = append(data, project)
+		fmt.Println(data)
 	}
 	if err = rows.Err(); err != nil {
 		return nil, err
@@ -98,6 +102,7 @@ func (r *RepositoryData) GetSkills(ctx context.Context, ownerID int) (data []mod
 		return nil, err
 	}
 	defer rows.Close()
+
 	var skill models.Skill
 	for rows.Next() {
 		if err = rows.Scan(
@@ -118,6 +123,7 @@ func (r *RepositoryData) GetPreviousJobs(ctx context.Context, ownerID int) (data
 	const sqlQuery = `
 		SELECT 
     			e.organisation,
+    			e.job_position,
     			e.responsibilities,
     			e.date_start,
     			e.date_end
@@ -134,10 +140,12 @@ func (r *RepositoryData) GetPreviousJobs(ctx context.Context, ownerID int) (data
 		return nil, err
 	}
 	defer rows.Close()
+
 	var experience models.Experience
 	for rows.Next() {
 		if err = rows.Scan(
 			&experience.Organisation,
+			&experience.Position,
 			&experience.Responsibilities,
 			&experience.DateStart,
 			&experience.DateEnd,

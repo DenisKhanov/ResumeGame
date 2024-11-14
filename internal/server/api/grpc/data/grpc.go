@@ -41,7 +41,10 @@ func (g *GRPCData) GetGameInfo(ctx context.Context, _ *protodata.GetGameInfoRequ
 	if info == "" {
 		return nil, status.Error(codes.Internal, "don't have game info")
 	}
-	response.GameInfo = info
+
+	response = &protodata.GetGameInfoResponse{
+		GameInfo: info,
+	}
 	return response, nil
 }
 
@@ -54,7 +57,10 @@ func (g *GRPCData) GetAboutOwner(ctx context.Context, _ *protodata.GetAboutOwner
 	if info == "" {
 		return nil, status.Error(codes.Internal, "don't have info about this project")
 	}
-	response.OwnerInfo = info
+
+	response = &protodata.GetAboutOwnerResponse{
+		OwnerInfo: info,
+	}
 	return response, nil
 }
 func (g *GRPCData) GetProjectList(ctx context.Context, _ *protodata.GetProjectListRequest) (response *protodata.GetProjectListResponse, err error) {
@@ -66,7 +72,10 @@ func (g *GRPCData) GetProjectList(ctx context.Context, _ *protodata.GetProjectLi
 	if len(projects) == 0 {
 		return nil, status.Error(codes.Internal, "don't have any projects")
 	}
-	response.AllProjects = projects
+
+	response = &protodata.GetProjectListResponse{
+		AllProjects: projects,
+	}
 	return response, nil
 }
 
@@ -79,7 +88,10 @@ func (g *GRPCData) GetSkills(ctx context.Context, _ *protodata.GetSkillsRequest)
 	if len(skills) == 0 {
 		return nil, status.Error(codes.Internal, "don't have any skills")
 	}
-	response.AllSkills = skills
+
+	response = &protodata.GetSkillsResponse{
+		AllSkills: skills,
+	}
 	return response, err
 }
 
@@ -92,7 +104,10 @@ func (g *GRPCData) GetPreviousJobs(ctx context.Context, _ *protodata.GetPrevious
 	if len(jobs) == 0 {
 		return nil, status.Error(codes.Internal, "don't have any jobs history")
 	}
-	response.AllExperience = jobs
+
+	response = &protodata.GetPreviousJobsResponse{
+		AllExperience: jobs,
+	}
 	return response, err
 }
 
@@ -102,6 +117,8 @@ func (g *GRPCData) GetContacts(ctx context.Context, _ *protodata.GetContactsRequ
 		logrus.WithError(err).Error("don't get owner contacts")
 		return nil, status.Error(codes.Internal, "don't get owner contacts")
 	}
-	response.Contacts = contacts
+	response = &protodata.GetContactsResponse{
+		Contacts: contacts,
+	}
 	return response, nil
 }

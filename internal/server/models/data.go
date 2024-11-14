@@ -16,6 +16,7 @@ type Skill struct {
 
 type Experience struct {
 	Organisation     string
+	Position         string
 	Responsibilities string
 	DateStart        time.Time
 	DateEnd          time.Time
@@ -24,7 +25,7 @@ type Experience struct {
 type Owner struct {
 	FirstName string
 	LastName  string
-	BirthDate string
+	Age       string
 	About     string
 }
 

@@ -10,10 +10,14 @@ import (
 func main() {
 	ctx := context.Background()
 
-	resumeGame, err := server.NewApp(ctx)
+	gameServer, err := server.NewApp(ctx)
 	if err != nil {
-		logrus.Fatalf("failed to init app: %s", err.Error())
+		logrus.Fatalf("failed to init server app: %s", err.Error())
+	}
+	if gameServer != nil {
+		gameServer.Run()
+	} else {
+		logrus.Fatal("failed to run server app")
 	}
 
-	resumeGame.Run()
 }

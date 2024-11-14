@@ -1,10 +1,10 @@
 -- +goose Up
 -- +goose StatementBegin
 CREATE TABLE IF NOT EXISTS project_skills (
-                                              project_id INT NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
-    skill_id INT NOT NULL REFERENCES skills(id) ON DELETE CASCADE,
-    PRIMARY KEY (project_id, skill_id)
-    );
+                                            project_id INT NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
+                                            skill_id INT NOT NULL REFERENCES skills(id) ON DELETE CASCADE,
+                                            PRIMARY KEY (project_id, skill_id)
+                                        );
 -- +goose StatementEnd
 
 

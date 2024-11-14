@@ -6,8 +6,8 @@ import (
 	models2 "github.com/DenisKhanov/ResumeGame/internal/server/models"
 	repodata "github.com/DenisKhanov/ResumeGame/internal/server/repositories/data"
 	protodata "github.com/DenisKhanov/ResumeGame/pkg/resume_v1/data"
+	"github.com/fatih/color"
 	"github.com/jackc/pgx/v5/pgxpool"
-	"google.golang.org/protobuf/types/known/timestamppb"
 	"strings"
 )
 
@@ -74,15 +74,16 @@ func (s *ServiceData) GetGameInfo(_ context.Context) (info string, err error) {
 }
 
 func (s *ServiceData) GetAboutOwner(ctx context.Context) (info string, err error) {
+	yellow := color.New(color.FgYellow).SprintFunc()
+	blue := color.New(color.FgBlue).SprintFunc()
+
 	owner, err := s.repository.GetAboutOwner(ctx, s.ownerID)
 	if err != nil {
 		return "", err
 	}
 	sb := strings.Builder{}
-
-	sb.WriteString(owner.FirstName + "\n")
-	sb.WriteString(owner.LastName + "\n")
-	sb.WriteString(owner.BirthDate + "\n")
+	sb.WriteString(yellow("Меня зовут " + owner.FirstName + " " + owner.LastName + "\n"))
+	sb.WriteString(blue("Мне " + owner.Age + " года\n"))
 	sb.WriteString(owner.About + "\n")
 	return sb.String(), nil
 }
@@ -91,14 +92,14 @@ func (s *ServiceData) GetProjectList(ctx context.Context) (data []*protodata.Pro
 	if err != nil {
 		return nil, err
 	}
-	var projectProto protodata.Project
+	var projectProto *protodata.Project
 	for _, project := range ownerProjects {
-		projectProto = protodata.Project{
+		projectProto = &protodata.Project{
 			Name:        project.Name,
 			Description: project.Description,
 			UsedSkills:  project.UsedSkills,
 		}
-		data = append(data, &projectProto)
+		data = append(data, projectProto)
 	}
 	return data, nil
 }
@@ -107,14 +108,14 @@ func (s *ServiceData) GetSkills(ctx context.Context) (data []*protodata.Skill, e
 	if err != nil {
 		return nil, err
 	}
-	var skillProto protodata.Skill
+	var skillProto *protodata.Skill
 	for _, skill := range ownerSkills {
-		skillProto = protodata.Skill{
+		skillProto = &protodata.Skill{
 			Name:        skill.Name,
 			Description: skill.Description,
 			Level:       skill.Level,
 		}
-		data = append(data, &skillProto)
+		data = append(data, skillProto)
 	}
 	return data, nil
 }
@@ -124,15 +125,16 @@ func (s *ServiceData) GetPreviousJobs(ctx context.Context) (data []*protodata.Ex
 	if err != nil {
 		return nil, err
 	}
-	var experienceProto protodata.Experience
+	var experienceProto *protodata.Experience
 	for _, experience := range ownerExperience {
-		experienceProto = protodata.Experience{
+		experienceProto = &protodata.Experience{
 			Organisation:     experience.Organisation,
+			Position:         experience.Position,
 			Responsibilities: experience.Responsibilities,
-			DateStart:        timestamppb.New(experience.DateStart),
-			DateEnd:          timestamppb.New(experience.DateEnd),
+			DateStart:        experience.DateStart.Format("2006-01"),
+			DateEnd:          experience.DateEnd.Format("2006-01"),
 		}
-		data = append(data, &experienceProto)
+		data = append(data, experienceProto)
 	}
 	return data, nil
 }

@@ -132,14 +132,14 @@ func (a *App) initServiceProvider(_ context.Context) error {
 
 // initGameGRPCServer initializes the  serverGRPC with interceptors.
 func (a *App) initGameGRPCServer(_ context.Context) error {
-	keeperDataGRPC := a.serviceProvider.GameDataGRPC(a.dbPool)
+	gameDataGRPC := a.serviceProvider.GameDataGRPC(a.dbPool)
 
 	server := grpc.NewServer(grpc.Creds(tlsCreds.NewTLS(a.tls)))
 	reflection.Register(server)
 	a.serverGRPC = server
 
 	// registration service
-	protodata.RegisterResumeDataV1Server(server, keeperDataGRPC)
+	protodata.RegisterResumeDataV1Server(server, gameDataGRPC)
 	return nil
 
 }

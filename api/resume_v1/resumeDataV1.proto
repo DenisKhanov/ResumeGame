@@ -2,8 +2,6 @@ syntax = "proto3";
 
 package resume_data_v1;
 
-import "google/protobuf/timestamp.proto";
-
 option go_package = "github.com/DenisKhanov/ForResume/pkg/resume_data_v1;resumeDataV1";
 
 service ResumeDataV1 {
@@ -67,9 +65,10 @@ message GetPreviousJobsRequest {
 
 message Experience {
     string organisation = 1;
-    string responsibilities = 2;
-    google.protobuf.Timestamp date_start = 3;
-    google.protobuf.Timestamp date_end = 4;
+    string position = 2;
+    string responsibilities = 3;
+    string date_start = 4;
+    string date_end = 5;
 }
 message GetPreviousJobsResponse {
     repeated Experience all_experience = 1;
@@ -86,6 +85,6 @@ message Contacts {
     string linkedin_link = 4;
     string github = 5;
 }
-message GetContactsResponse{
+message GetContactsResponse {
     Contacts contacts = 1;
 }
