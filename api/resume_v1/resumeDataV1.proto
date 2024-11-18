@@ -1,0 +1,90 @@
+syntax = "proto3";
+
+package resume_data_v1;
+
+option go_package = "github.com/DenisKhanov/ForResume/pkg/resume_data_v1;resumeDataV1";
+
+service ResumeDataV1 {
+    rpc GetGameInfo (GetGameInfoRequest) returns (GetGameInfoResponse);
+    rpc GetAboutOwner (GetAboutOwnerRequest) returns (GetAboutOwnerResponse);
+    rpc GetProjectList (GetProjectListRequest) returns (GetProjectListResponse);
+    rpc GetSkills (GetSkillsRequest) returns (GetSkillsResponse);
+    rpc GetPreviousJobs (GetPreviousJobsRequest) returns (GetPreviousJobsResponse);
+    rpc GetContacts (GetContactsRequest) returns (GetContactsResponse);
+}
+
+
+message GetGameInfoRequest {
+
+}
+
+message GetGameInfoResponse {
+    string game_info = 1;
+}
+
+message GetAboutOwnerRequest {
+
+}
+
+message GetAboutOwnerResponse {
+    string owner_info = 1;
+}
+
+
+message GetProjectListRequest {
+
+}
+
+message Project {
+    string name = 1;
+    string description = 2;
+    string used_skills = 3;
+}
+
+message GetProjectListResponse {
+    repeated Project all_projects = 1;
+}
+
+message GetSkillsRequest {
+
+}
+
+message Skill {
+    string name = 1;
+    string description = 2;
+    string level = 3;
+}
+
+message GetSkillsResponse {
+    repeated Skill all_skills = 1;
+}
+
+message GetPreviousJobsRequest {
+
+}
+
+message Experience {
+    string organisation = 1;
+    string position = 2;
+    string responsibilities = 3;
+    string date_start = 4;
+    string date_end = 5;
+}
+message GetPreviousJobsResponse {
+    repeated Experience all_experience = 1;
+}
+
+message GetContactsRequest {
+
+}
+
+message Contacts {
+    string phone_number = 1;
+    string email = 2;
+    string telegram = 3;
+    string linkedin_link = 4;
+    string github = 5;
+}
+message GetContactsResponse {
+    Contacts contacts = 1;
+}

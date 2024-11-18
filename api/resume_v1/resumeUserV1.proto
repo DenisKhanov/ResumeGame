@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package resume_user_v1;
+
+option go_package = "github.com/DenisKhanov/ForResume/pkg/resume_user_v1;resumeUserV1";
+
+service ResumeUserV1 {
+    rpc SignUp (SignUpRequest) returns (SignUpResponse);
+    rpc SignIn (SignInRequest) returns (SignInResponse);
+}
+
+message SignUpRequest {
+    string login = 1;
+}
+
+message SignUpResponse {
+}
+
+message SignInRequest {
+    string login = 1;
+}
+
+message SignInResponse {
+}
